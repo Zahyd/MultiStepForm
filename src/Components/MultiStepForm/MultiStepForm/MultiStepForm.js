@@ -49,6 +49,11 @@ const MultiStepForm = () => {
         { placeholder: "Username...", name: "uname", type: "text", required: true },
         { placeholder: "Password...", name: "pword", type: "password", required: true }
       ]
+    },
+    {
+      title: "Preview & Submit",
+      icon: "✅",
+      fields: [] // No input fields for this step
     }
   ];
 
@@ -150,30 +155,46 @@ const MultiStepForm = () => {
               key={index} 
               className={`step-content ${index === currentStep ? 'active' : ''}`}
             >
-              <h2 className="step-heading">
-                <span className="step-number">Step {index + 1}</span>
-                {step.title}
-              </h2>
-              
-              <div className="form-grid">
-                {step.fields.map((field, fieldIndex) => (
-                  <div key={fieldIndex} className="input-group">
-                    <input
-                      className={`form-input ${errors[field.name] ? 'invalid' : ''}`}
-                      placeholder={field.placeholder}
-                      name={field.name}
-                      type={field.type}
-                      value={formData[field.name]}
-                      onChange={handleChange}
-                      pattern={field.pattern}
-                      maxLength={field.maxLength}
-                    />
-                    {errors[field.name] && (
-                      <div className="error-message">{errors[field.name]}</div>
-                    )}
+              {index === steps.length - 1 ? (
+                // Preview Step
+                <div>
+                  <h2 className="step-heading">Review Your Information</h2>
+                  <ul className="preview-list">
+                    {Object.entries(formData).map(([key, value]) => (
+                      <li key={key}>
+                        <strong>{key.replace(/^\w/, c => c.toUpperCase())}:</strong> {value || "Not provided"}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                // Regular Step
+                <div>
+                  <h2 className="step-heading">
+                    <span className="step-number">Step {index + 1}</span>
+                    {step.title}
+                  </h2>
+                  <div className="form-grid">
+                    {step.fields.map((field, fieldIndex) => (
+                      <div key={fieldIndex} className="input-group">
+                        <input
+                          className={`form-input ${errors[field.name] ? 'invalid' : ''}`}
+                          placeholder={field.placeholder}
+                          name={field.name}
+                          type={field.type}
+                          value={formData[field.name]}
+                          onChange={handleChange}
+                          pattern={field.pattern}
+                          maxLength={field.maxLength}
+                        />
+                        {errors[field.name] && (
+                          <div className="error-message">{errors[field.name]}</div>
+                        )}
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </div>
+              )}
             </div>
           ))}
           
@@ -201,7 +222,7 @@ const MultiStepForm = () => {
                 type="submit" 
                 className="btn btn-submit"
               >
-                Complete Registration
+                Confirm & Submit
               </button>
             )}
           </div>
